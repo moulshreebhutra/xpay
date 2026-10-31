@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moulshree Bhutra × xPay</title>
+<meta name="description" content="An application to xPay for the Product Manager role: who I am, why I fit, my teardown of xPay and my 90-day plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* ---- PALETTE: placeholder. Swap these variables to match xPay's site. ---- */
+:root{
+  --bg:#f6f7fb;
+  --bg2:#eceefb;
+  --card:#ffffff;
+  --line:rgba(15,23,42,.10);
+  --text:#0f172a;
+  --muted:#52607a;
+  --accent:#4f46e5;      /* primary */
+  --accent-ink:#ffffff;  /* text on primary */
+  --accent2:#0ea5a4;     /* secondary highlight */
+  --soft:#e6e8fb;        /* tinted fills */
+  --hero-alt-a:#4f46e5;
+  --hero-alt-b:#3730a3;
+  --warn:#b45309;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{line-height:1.15;margin:0 0 .5em;letter-spacing:-.02em}
+h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800}
+h2{font-size:clamp(1.55rem,3.4vw,2.3rem);font-weight:800}
+h3{font-size:1.15rem}
+h4{font-size:1rem;color:var(--accent)}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.eyebrow{display:inline-block;font-size:.76rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(246,247,251,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{font-weight:800;text-decoration:none;color:var(--text);white-space:nowrap}
+.brand span{color:var(--accent)}
+.navlinks{display:flex;gap:6px}
+.navlinks a{color:var(--muted);text-decoration:none;font-size:.9rem;padding:8px 12px;border-radius:999px}
+.navlinks a:hover{color:var(--text);background:var(--soft)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);font-weight:700;text-decoration:none;padding:13px 22px;border-radius:999px;font-size:1rem;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:inherit;border:1px solid currentColor;opacity:.95}
+
+section{padding:70px 0}
+.lead{font-size:1.12rem;color:var(--muted);max-width:760px}
+
+/* hero cards */
+.hero{padding:52px 0 20px}
+.hcard{position:relative;border:1px solid var(--line);border-radius:28px;padding:clamp(24px,4.5vw,52px);margin-top:22px;overflow:hidden;
+  background:radial-gradient(520px 320px at 0% 0%,rgba(79,70,229,.14),transparent 70%),radial-gradient(520px 340px at 100% 100%,rgba(14,165,164,.12),transparent 70%),var(--card)}
+.hcard h1{margin-top:6px}
+.hcard h1 .grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hcard.alt{background:radial-gradient(500px 300px at 100% 0%,rgba(255,255,255,.25),transparent 70%),linear-gradient(135deg,var(--hero-alt-a),var(--hero-alt-b));border-color:transparent;color:#fff}
+.hero .it{font-family:"Source Serif 4","Newsreader",Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(1.3rem,2.4vw,1.8rem);line-height:1.35;color:#fff;margin:0;max-width:760px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.hcard.alt .btn{background:#fff;color:var(--hero-alt-b)}
+.hcard.alt .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.6)}
+
+/* layout with sticky contents */
+.shell{max-width:1360px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:7fr 3fr;gap:36px;align-items:start}
+.shell main{min-width:0}
+.shell .wrap{max-width:none;padding:0}
+.side{position:sticky;top:84px;margin-top:40px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.toc{padding:22px}
+.toc a{display:block;text-decoration:none;color:var(--muted);padding:12px;margin:0 -12px;border-radius:10px;border-left:3px solid transparent;font-weight:600}
+.toc a:hover{color:var(--text);background:var(--soft)}
+.toc a.on{color:var(--text);border-left-color:var(--accent);background:var(--soft)}
+
+/* impact */
+.impact-p{color:var(--muted);max-width:820px}
+.impact-p b{color:var(--text)}
+.impact-h{margin:30px 0 14px}
+.impact{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:16px 0 8px}
+.impact>div{padding:22px 20px;border-right:1px solid var(--line)}
+.impact>div:last-child{border-right:0}
+.impact .n{font-family:"Source Serif 4",Georgia,serif;font-size:clamp(2rem,3.6vw,2.7rem);font-weight:600;line-height:1;color:var(--accent)}
+.impact .l{color:var(--muted);font-size:.9rem;margin-top:10px}
+
+.sides-h{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;color:var(--accent);margin:36px 0 0;max-width:820px;line-height:1.2}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+.sides .panel h3{display:flex;align-items:center;gap:10px}
+.pill{font-size:.95rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:6px 16px;border-radius:999px;background:var(--soft);color:var(--accent);flex:0 0 auto}
+.sides ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.95rem}
+.sides li{margin:7px 0}
+.sides li b{color:var(--text)}
+.learn{border-left:4px solid var(--accent2);background:var(--card);border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;margin-top:8px;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.learn p{margin:0 0 .6em;color:var(--muted)}
+.learn p:last-child{margin:0}
+
+/* teardown */
+.tdbg{background:linear-gradient(180deg,transparent,var(--bg2) 12%,var(--bg2) 88%,transparent)}
+.shell #teardown{background:none}
+.sub{margin-top:44px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.two ul{margin:6px 0 0;padding-left:18px;color:var(--muted)}
+.two li{margin:6px 0}
+.journey{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:22px 0}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:.88rem;position:relative}
+.step i{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-style:normal;font-weight:700;font-size:.78rem;align-items:center;justify-content:center;margin-bottom:8px}
+.step b{display:block;margin-bottom:2px}
+.step span{color:var(--muted);font-size:.83rem;display:block}
+.step:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--accent);font-weight:700;background:var(--bg2);border-radius:50%;width:20px;height:20px;line-height:20px;text-align:center;font-size:.8rem;z-index:2}
+.map{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:6px}
+.map th{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 14px 4px}
+.map td{background:var(--card);padding:14px;font-size:.92rem;vertical-align:top;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.map td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+.map td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0;color:var(--accent);font-weight:600}
+.look{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.look .panel h4{margin-bottom:6px}
+.look .panel p{margin:0;color:var(--muted);font-size:.94rem}
+.note{font-size:.88rem;color:var(--muted);border-left:3px solid var(--warn);padding:6px 0 6px 14px;margin:18px 0}
+
+/* plan */
+.plan{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.phase{display:flex;flex-direction:column}
+.phase .day{font-size:2.8rem;font-weight:800;line-height:1;color:var(--accent)}
+.phase h3{margin:6px 0 4px}
+.phase .theme{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+.phase ul{margin:0 0 14px;padding-left:18px;font-size:.93rem}
+.phase li{margin:6px 0}
+.phase .out{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;font-size:.88rem;color:var(--muted)}
+.phase .out b{color:var(--accent2)}
+.timeline{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--soft),var(--accent) 60%,var(--accent2));margin-top:24px}
+
+.close{text-align:center;padding:80px 0 100px}
+.close h2{max-width:760px;margin:0 auto 16px}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.85rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+
+@media (max-width:1000px){
+  .shell{grid-template-columns:1fr;gap:0}
+  .side{display:none}
+  .impact{grid-template-columns:1fr 1fr}
+  .impact>div:nth-child(2){border-right:0}
+  .impact>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .journey{grid-template-columns:repeat(3,1fr)}
+  .plan{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  section{padding:54px 0}
+  .shell{padding:0 16px}
+  .sides,.two,.look{grid-template-columns:1fr}
+  .journey{grid-template-columns:1fr}
+  .step:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)}
+  .map thead{display:none}
+  .map,.map tbody,.map tr,.map td{display:block;width:100%}
+  .map tr{margin-bottom:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .map td{border:0 !important;border-radius:0 !important;background:transparent;padding:8px 14px}
+  .map td::before{content:attr(data-l);display:block;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400}
+  .brand{font-size:.88rem}
+  .navlinks{gap:0}
+  .navlinks a{padding:8px 7px;font-size:.82rem}
+  nav .wrap{padding:0 12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">Moulshree <span>×</span> xPay</a>
+    <div class="navlinks">
+      <a href="https://drive.google.com/file/d/1GHfC6ox5rxPm594xy54xIWD2Hj_x71h_/view?usp=sharing" target="_blank" rel="noopener">Resume</a>
+      <a href="https://www.linkedin.com/in/moulshree-bhutra-159a99118" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://moulshree-portfolio.vercel.app" target="_blank" rel="noopener">Portfolio</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header id="top" class="hero">
+  <div class="wrap">
+    <div class="hcard">
+      <span class="eyebrow">Application · Product Manager</span>
+      <h1>Hey xPay, I'd love to join you in making cross-border payments feel <span class="grad">local for every business and every customer.</span></h1>
+      <p class="lead">I'm Moulshree, an AI-native PM with a strong design sense. I've spent 3+ years building and scaling 0→1 B2B SaaS products at a startup. I like figuring out what's worth solving, then making the solution a joy to use.</p>
+    </div>
+    <div class="hcard alt">
+      <p class="it">Along with applying, I studied your product and drafted a 90-day plan so I can hit the ground running from day 1.</p>
+      <div class="cta">
+        <a class="btn" href="#teardown">My teardown of xPay →</a>
+        <a class="btn ghost" href="#plan">My 90-day plan</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+<main>
+
+<!-- ============ WHY HIRE ME ============ -->
+<section id="why" style="padding-top:44px">
+  <div class="wrap">
+    <span class="eyebrow">Why you should hire me</span>
+    <h2>A fit for a role that spans both sides of the product: the businesses that integrate xPay, and the customers who pay through it.</h2>
+    <p class="impact-p">Your job post says the PM owns products from 0→1 and beyond, works closely with B2B SaaS customers, and partners with engineering and design. That's the job I've been doing at Vudio.ai, where I've launched multiple 0-to-1 products with full ownership from discovery to launch, and helped grow the company from a niche video-commerce tool into an AI-powered marketing suite for D2C brands, contributing to a <b>30x ARR uplift ($10K → $300K)</b> in two years.</p>
+
+    <h3 class="impact-h">My impact</h3>
+    <div class="impact reveal">
+      <div><div class="n">30x</div><div class="l">ARR growth in two years, $10K to $300K</div></div>
+      <div><div class="n">6+</div><div class="l">zero-to-one modules built</div></div>
+      <div><div class="n">1,000+</div><div class="l">clients, including Shoppers Stop and Godrej</div></div>
+      <div><div class="n">~74%</div><div class="l">activation lift from self-serve onboarding</div></div>
+    </div>
+
+    <h3 class="sides-h">At Vudio.ai, I've built for both the B2B and the B2C side of the product experience.</h3>
+    <div class="sides">
+      <div class="panel reveal">
+        <h3><span class="pill">B2B</span> The businesses that buy the product</h3>
+        <ul>
+          <li><b>Built 6+ 0→1 modules</b> and helped take Vudio.ai from a niche video-commerce tool to a full-stack marketing platform.</li>
+          <li><b>Owned onboarding and activation:</b> customer calls to find the problem, a spec, A/B tests and phased rollouts, then the numbers afterwards.</li>
+          <li><b>Worked with the whole business</b> (engineering, design, customer success and the founder) to turn customer pain into shipped product.</li>
+        </ul>
+      </div>
+      <div class="panel reveal">
+        <h3><span class="pill">B2C</span> The people who use it at the moment that matters</h3>
+        <ul>
+          <li><b>Designed Vudio's shoppable widgets</b>, the part shoppers actually touch on a brand's store: how each one looks, behaves and responds.</li>
+          <li><b>Mapped the full shopper journey</b> from first seeing a widget, to interacting with it, to buying, and designed for the moments people drop off: attention, trust, friction and the last tap.</li>
+          <li><b>Reached 10M+ widget views</b> by testing placement on high-intent pages.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="learn reveal">
+      <h4>What I'll need to learn fast, and how I'll do it</h4>
+      <p>I haven't worked in payments before, and your post asks for 4–7 years of experience, preferably in fintech. I'd rather say that up front than hope you don't notice.</p>
+      <p>In my first 30 days I'll learn the core concepts (authorization, 3DS, acquirers, settlement, disputes, FIRC) by putting test transactions through end to end and sitting in on support and sales calls. What I bring is the product skill: turning messy customer problems into shipped, measured improvements, on both the merchant side and the shopper's side.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEARDOWN ============ -->
+<section id="teardown">
+  <div class="wrap">
+    <span class="eyebrow">My teardown of xPay</span>
+    <h2>I studied your product before applying, so I can get up to speed fast.</h2>
+    <p class="lead">What I think xPay does, who it's for, where the friction is and what I'd look at first. It's built from your website, pricing page, launch post and job post. Please correct me where I've got it wrong.</p>
+
+    <h3 class="sub">1 · What xPay does</h3>
+    <p class="muted" style="max-width:780px">xPay (YC W24) is an international payment gateway for Indian businesses that sell globally. A merchant integrates once, or just sends a payment link, and can charge customers in 100+ currencies with cards, wallets and local methods. Funds settle in INR, and sales-tax and FIRC paperwork are handled for them.</p>
+
+    <h3 class="sub">2 · Who the customers are</h3>
+    <div class="two">
+      <div class="panel reveal"><h4>Merchants (the businesses that pay xPay)</h4><ul><li>SaaS, edtech, travel, D2C and digital businesses selling abroad</li><li>Per the job post: B2B SaaS companies</li><li>Care about success rate, cost, settlement speed and paperwork</li></ul></div>
+      <div class="panel reveal"><h4>Their end customers (the people who pay)</h4><ul><li>International shoppers and subscribers</li><li>Want to pay their own way, in their own currency, without surprises</li><li>Never choose xPay, but feel it at the moment of payment</li></ul></div>
+    </div>
+
+    <h3 class="sub">3 · The journey, as I understand it</h3>
+    <div class="journey reveal">
+      <div class="step"><i>1</i><b>Sign up</b><span>Onboard and get verified</span></div>
+      <div class="step"><i>2</i><b>Integrate</b><span>API or no-code payment link</span></div>
+      <div class="step"><i>3</i><b>Customer pays</b><span>Card, wallet, BNPL or local method</span></div>
+      <div class="step"><i>4</i><b>Optimise</b><span>Local acquiring, smart retries</span></div>
+      <div class="step"><i>5</i><b>Settle</b><span>INR settlement, FIRC, sales tax</span></div>
+      <div class="step"><i>6</i><b>Report</b><span>Transactions, risk scores, fees</span></div>
+    </div>
+
+    <h3 class="sub">4 · Pain points and how xPay answers them</h3>
+    <table class="map">
+      <thead><tr><th>Pain point</th><th>Who feels it</th><th>xPay's answer</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Pain point">Going global means separate vendors, entities and compliance work (their launch post says 6–8 months)</td><td data-l="Who">Merchants</td><td data-l="Answer">One integration, managed onboarding</td></tr>
+        <tr><td data-l="Pain point">International cards get declined</td><td data-l="Who">Merchants and shoppers</td><td data-l="Answer">Direct local acquiring and smart retries (they claim 95% success)</td></tr>
+        <tr><td data-l="Pain point">Shoppers want to pay their own way</td><td data-l="Who">Shoppers</td><td data-l="Answer">45+ local methods; BNPL such as Klarna and Affirm</td></tr>
+        <tr><td data-l="Pain point">Paperwork: FIRC and sales tax</td><td data-l="Who">Merchants</td><td data-l="Answer">Documents in the dashboard, sales tax autopilot</td></tr>
+        <tr><td data-l="Pain point">"I need help right now"</td><td data-l="Who">Merchants</td><td data-l="Answer">10-minute support SLA by phone or WhatsApp</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub">5 · What I'd look at first</h3>
+    <p class="muted" style="max-width:780px">These come from public pages, so they're hypotheses to check against your real data.</p>
+    <div class="look">
+      <div class="panel reveal"><h4>Pricing is hard to add up</h4><p>The fee list has a base rate (3% + 35¢) plus separate lines for international cards (1.5%), FX (1%), payouts (1%) and more. A founder comparing options may struggle to see their all-in cost. A "your effective rate" calculator could help.</p></div>
+      <div class="panel reveal"><h4>Public numbers aren't consistent</h4><p>The site gives different counts for countries (140+ and 160+) and currencies (100+, 110+ and 150+). Small things like this matter in payments, where trust is the product.</p></div>
+      <div class="panel reveal"><h4>Proof is thin in public</h4><p>The G2 page shows a single review. Short case studies with success-rate and conversion numbers, built from the testimonials you already have, would help buyers decide.</p></div>
+      <div class="panel reveal"><h4>Settlement timing isn't on the pricing page</h4><p>It's the first thing finance teams ask about. The homepage mentions 24 hours for virtual accounts, but a clear settlement promise for card payments would help.</p></div>
+      <div class="panel reveal" style="grid-column:1/-1"><h4>The shopper side is mostly invisible</h4><p>The 95% success claim is the biggest lever for both sides. I'd want to see decline reasons by country and card type, and what the shopper actually sees when a payment fails. A failed payment is a design problem as much as a payments one.</p></div>
+    </div>
+    <p class="note">This is an outsider's read built from public sources: the website, pricing page, launch post, job post and G2. Where you have data, please correct me.</p>
+  </div>
+</section>
+
+<!-- ============ 90 DAY PLAN ============ -->
+<section id="plan">
+  <div class="wrap">
+    <span class="eyebrow">My 90-day plan</span>
+    <h2>How I'd spend my first three months.</h2>
+    <p class="lead">Learn like a customer, ship small, measure, then own an outcome.</p>
+
+    <div class="plan">
+      <div class="panel phase reveal">
+        <div class="day">30</div>
+        <h3>Learn and earn trust</h3>
+        <div class="theme">Days 1–30</div>
+        <ul>
+          <li>Learn payments hands-on: put test transactions through end to end, and read decline and dispute data with the team</li>
+          <li>Sit in on sales calls and support (WhatsApp and phone) to find the top recurring merchant problems</li>
+          <li>Map two funnels: merchant onboarding (sign-up → first successful payment) and the shopper's checkout (page → paid)</li>
+          <li>Ship one small improvement with a spec and a clear success measure</li>
+        </ul>
+        <div class="out"><b>Output:</b> a ranked list of friction points with evidence, plus one shipped fix</div>
+      </div>
+      <div class="panel phase reveal">
+        <div class="day">60</div>
+        <h3>Prove</h3>
+        <div class="theme">Days 31–60</div>
+        <ul>
+          <li>Write problem-first specs for the top 2–3 problems, agreed with engineering and design</li>
+          <li>Launch the first meaningful improvement in stages, with A/B tests where possible (e.g. clearer decline messaging, or an onboarding checklist that gets merchants to their first payment sooner)</li>
+          <li>Set up simple dashboards for activation and success rate</li>
+          <li>Run weekly merchant conversations that feed straight into the backlog</li>
+        </ul>
+        <div class="out"><b>Output:</b> one measured improvement and a first health dashboard</div>
+      </div>
+      <div class="panel phase reveal">
+        <div class="day">90</div>
+        <h3>Own an outcome</h3>
+        <div class="theme">Days 61–90</div>
+        <ul>
+          <li>Take ownership of one metric (for example time to first successful payment, or recovery of failed payments)</li>
+          <li>Launch a 0→1 piece in that area and measure before and after</li>
+          <li>Write up what worked and what didn't</li>
+          <li>Propose the next quarter's roadmap</li>
+        </ul>
+        <div class="out"><b>Output:</b> a measured result on something I own, plus a roadmap proposal</div>
+      </div>
+    </div>
+    <div class="timeline"></div>
+    <p class="note">This will change once I see real data. The approach stays the same: learn like a customer, ship small, measure, then own an outcome.</p>
+  </div>
+</section>
+
+<section class="close" id="lets-talk">
+  <div class="wrap">
+    <span class="eyebrow">Let's talk</span>
+    <h2>I'd love to help xPay become the default way Indian businesses get paid by the world.</h2>
+    <p class="lead" style="margin:0 auto 26px">Thanks for reading all the way down. I'd be glad to walk through any of this, or to be told where I got it wrong.</p>
+    <a class="btn" href="mailto:moulshreebhutra@gmail.com?subject=Product%20Manager%20%C2%B7%20Moulshree%20Bhutra">Say hello →</a>
+    <a class="btn ghost" style="color:var(--accent);margin-left:8px" href="https://www.linkedin.com/in/moulshree-bhutra-159a99118" target="_blank" rel="noopener">LinkedIn</a>
+    <a class="btn ghost" style="color:var(--accent);margin-left:8px" href="https://moulshree-portfolio.vercel.app" target="_blank" rel="noopener">Portfolio</a>
+  </div>
+</section>
+
+</main>
+<aside class="side">
+  <div class="panel toc">
+    <span class="eyebrow">On this page</span>
+    <a href="#why" class="on">Why hire me</a>
+    <a href="#teardown">My teardown of xPay</a>
+    <a href="#plan">My 90-day plan</a>
+    <a href="#lets-talk">Let's talk</a>
+  </div>
+</aside>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Built by Moulshree Bhutra for xPay. Not affiliated with or endorsed by xPay.</span>
+    <span>Product facts from public pages: website, pricing, launch post, job post</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc a'));
+  function setOn(){
+    var y=window.scrollY+160,cur=links[0];
+    links.forEach(function(a){var el=document.querySelector(a.getAttribute('href'));if(el&&el.getBoundingClientRect().top+window.scrollY<=y)cur=a});
+    links.forEach(function(a){a.classList.toggle('on',a===cur)});
+  }
+  window.addEventListener('scroll',setOn,{passive:true});setOn();
+  var els=[].slice.call(document.querySelectorAll('.reveal'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    els.forEach(function(e){io.observe(e)});
+  } else { els.forEach(function(e){e.classList.add('in')}); }
+})();
+</script>
+</body>
+</html>
